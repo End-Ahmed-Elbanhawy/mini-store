@@ -5,7 +5,7 @@ import morgan from "morgan";
 import notFound from "./middleware/not-found.mjs";
 import errorHandler from "./middleware/error-handler.mjs";
 import helmet from "helmet";
-
+import { categoriesRouter } from "./routes/categories.routes.mjs";
 
 await sequelize.authenticate();
 
@@ -24,11 +24,8 @@ app.use(morgan("combined"));
 app.use(express.json());
 
 
-
-
-
-
-
+//routes
+app.use("/apt/categories", categoriesRouter);
 
 
 app.use(notFound);
@@ -37,4 +34,6 @@ app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
+app.listen(port, () =>
+  console.log(`Server is running on http://localhost:${port}`),
+);
