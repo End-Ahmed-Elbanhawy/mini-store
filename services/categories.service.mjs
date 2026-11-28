@@ -1,7 +1,8 @@
-import { Category } from "../models/categories.model.mjs";
+import { Category } from "../models/index.mjs";
 
 export const list = () => Category.findAll({ order: [["name", "ASC"]] });
 
-export const create = async (name) => {
-  await Category.create(name);
+export const create = ({ name }) => {
+  console.log(name);
+  Category.create({ name });
 };

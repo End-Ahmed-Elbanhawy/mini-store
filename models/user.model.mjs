@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.mjs";
 import bcrypt from "bcrypt";
+import { signToken, veriifyTocken } from "../utils/token.mjs";
+import { AppError } from "../utils/app-error.mjs";
 
 export const UserRole = Object.freeze({
   USER: "user",
@@ -61,3 +63,28 @@ export const User = sequelize.define(
     },
   },
 );
+
+User.prototype.generateToken = function () {
+  return signToken(this.id);
+};
+
+User.findByToken = async function (token) {
+  const payload = veriifyTocken(token);
+  const user = await this.findByPk(payload.id);
+  
+  if (
+    user?.passwordChangedAt &&
+    payload.iat * 1000 < user.passwordChangedAt.getTime() - 1000
+  ) {
+    throw new AppError("Passord was changed, please login again", 401);
+  }
+  return user;
+};
+
+User.prototype.toJSON = function () {
+  const values = { ...this.get() };
+  delete values.password;
+  delete values.passwordChangedAt;
+
+  return values;
+};

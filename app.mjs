@@ -6,6 +6,7 @@ import notFound from "./middleware/not-found.mjs";
 import errorHandler from "./middleware/error-handler.mjs";
 import helmet from "helmet";
 import { categoriesRouter } from "./routes/categories.routes.mjs";
+import { authRouter } from "./routes/auth.routes.mjs";
 
 await sequelize.authenticate();
 
@@ -25,7 +26,9 @@ app.use(express.json());
 
 
 //routes
-app.use("/apt/categories", categoriesRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/categories", categoriesRouter);
+
 
 
 app.use(notFound);
